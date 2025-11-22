@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "termuxpackagearchiver"
+authors = [{ email = "tdebize@mail.com" }]
+description = "A simple script to archive Termux packages on archive.org"
+readme = "README.md"
+requires-python = ">=3"
+keywords = ["termux", "package", "archive", "internetarchive", "archive.org", "wayback"]
+license = "LGPL-3.0-or-later"
+classifiers = [
+    'Programming Language :: Python :: 3'
+]
+dynamic = ["version", "dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["termuxpackagearchiver/requirements.txt"]}
+version = {attr = "termuxpackagearchiver.termuxpackagearchiver.VERSION"}
+
+[project.urls]
+Homepage = "https://github.com/maaaaz/termuxpackagearchiver"
+
+[project.scripts]
+termuxpackagearchiver = "termuxpackagearchiver.termuxpackagearchiver:main"
