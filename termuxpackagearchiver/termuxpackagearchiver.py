@@ -13,8 +13,8 @@ import pprint
 import sh
 
 # Globals
-VERSION = '1.0'
-PREFIX = 'termux_pkg_archive_'
+VERSION = '1.1'
+PREFIX = 'termux_pkgs_archive_'
 
 # For testing purposes
 #PREFIX = 'test_termux_pkg_archive_'
