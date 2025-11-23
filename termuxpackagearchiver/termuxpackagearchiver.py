@@ -13,7 +13,7 @@ import pprint
 import sh
 
 # Globals
-VERSION = '1.5'
+VERSION = '1.6'
 ACTION_CHOICES = ['upload', 'parse_commits']
 PREFIX = 'termux_pkgs_archive_'
 
@@ -31,7 +31,7 @@ upload_grp.add_argument('-d', '--directory', help='Directory containing director
 upload_grp.add_argument('-p', '--prefix', help='Prefix to use for archive.org items (default: "%s")' % PREFIX, default = PREFIX)
 upload_grp.add_argument('-s', '--skip-file-check-items', help='Skip file existence on archive.org items (default: False)', action = 'store_true', default = False)
 
-parse_grp = parser.add_argument_group('Parse parameters')
+parse_grp = parser.add_argument_group('Parse_commits parameters')
 parse_grp.add_argument('-i', '--input-commit-file', help='Input commit log file to parse')
 parse_grp.add_argument('-o', '--output-directory', help='Output directory for downloaded files')
 
@@ -54,7 +54,7 @@ def get_download_url(repo, pkg, options):
     return result
 
 def parse_and_download(options):
-    p_parse = re.compile(r'^(?P<commit_type>bump|rebuild|dwnpkg|addpkg|revbump|fix)\((?P<repo>.*)\/(?P<pkg>.*)\)')
+    p_parse = re.compile(r'^(?P<commit_type>bump|rebuild|dwnpkg|addpkg|revbump|fix)\((?P<repo>.*)\/(?P<pkg>.*?)\)')
     
     with open(options.input_commit_file, mode='r', encoding='utf-8') as fd_input:
         for line in fd_input:
