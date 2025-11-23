@@ -15,16 +15,33 @@ $ pip install termuxpackagearchiver
 $ ia configure 
 
 $ termuxpackagearchiver
-usage: termuxpackagearchiver.py [-h] -d DIRECTORY [-p PREFIX]
+usage: termuxpackagearchiver [-h] -a {upload,parse_commits} [-d DIRECTORY]
+                             [-p PREFIX] [-s] [-i INPUT_COMMIT_FILE]
+                             [-o OUTPUT_DIRECTORY]
 
-version: 1.0
+version: 1.4
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  -d DIRECTORY, --directory DIRECTORY
+
+Action parameters:
+  -a, --action {upload,parse_commits}
+                        Action to perform (upload, parse_commits)
+
+Upload parameters:
+  -d, --directory DIRECTORY
                         Directory containing directories of package
-  -p PREFIX, --prefix PREFIX
-                        Prefix to use for archive.org items (default: "termux_pkg_archive_")
+  -p, --prefix PREFIX   Prefix to use for archive.org items (default:
+                        "termux_pkgs_archive_")
+  -s, --skip-file-check-items
+                        Skip file existence on archive.org items (default:
+                        False)
+
+Parse parameters:
+  -i, --input-commit-file INPUT_COMMIT_FILE
+                        Input commit log file to parse
+  -o, --output-directory OUTPUT_DIRECTORY
+                        Output directory for downloaded files
 ```
   
   
