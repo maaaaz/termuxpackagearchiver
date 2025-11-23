@@ -27,11 +27,7 @@ optional arguments:
                         Prefix to use for archive.org items (default: "termux_pkg_archive_")
 ```
   
-
-Changelog
----------
-* version 1.0 - 2025-11-11: Publication on pypi.org
-
+  
 
 Copyright and license
 ---------------------

@@ -13,11 +13,9 @@ import pprint
 import sh
 
 # Globals
-VERSION = '1.1'
+VERSION = '1.2'
 PREFIX = 'termux_pkgs_archive_'
 
-# For testing purposes
-#PREFIX = 'test_termux_pkg_archive_'
 
 # Options definition
 parser = argparse.ArgumentParser(description="version: " + VERSION)
@@ -29,7 +27,7 @@ ALPHABET = list(['lib' + i for i in ALPHABET_ALPHANUM]) + ALPHABET_ALPHANUM
 
 def upload_files(dirs_to_upload, archive_items_to_list, archive_items_file_list, options):
     for dir_to_upload in dirs_to_upload:
-        for file_to_upload in glob.iglob(os.path.join(dir_to_upload, '*.deb'), recursive=True):
+        for file_to_upload in sorted(glob.iglob(os.path.join(dir_to_upload, '*.deb'), recursive=True)):
             file_to_upload_filename = os.path.basename(file_to_upload)
             
             if not(file_to_upload_filename in archive_items_file_list):
@@ -38,8 +36,9 @@ def upload_files(dirs_to_upload, archive_items_to_list, archive_items_file_list,
                 
                 print('[+] Uploading "%s" to archive.org item "%s"' % (relative_file_path, archive_item_name))
                 try:
-                    upload_result = sh.ia('upload', '-n', '-v', '--no-backup', '--keep-directories', "%s" % archive_item_name, "%s" % relative_file_path, _cwd=options.directory)
-                    print(upload_result)
+                    upload_result = sh.ia('upload', '-n', '-v', '--no-backup', '--keep-directories', "%s" % archive_item_name, "%s" % relative_file_path, _cwd=os.path.abspath(options.directory))
+                    if upload_result:
+                        print(upload_result)
                 
                 except sh.ErrorReturnCode as e:
                     print('[!] Error while uploading "%s" to "%s":\n"%s"' % (relative_file_path, archive_item_name, e))
@@ -51,7 +50,6 @@ def list_archive_items(archive_items_to_list, options):
     for archive_item_name in archive_items_to_list:
         current_file_list = None
         try:
-            #current_file_list = sh.ia('list', "termux_pkg_archive_test", '-g', '*.deb' )
             current_file_list = sh.ia('list', "%s" % archive_item_name, '-g', '*.deb' )
         
         except sh.ErrorReturnCode as e:
@@ -85,16 +83,11 @@ def find_matching_archive_item_bin(entry, options):
 
 def enumerate_archive_items_to_list(dirs_to_upload, options):
     archive_items_to_list = []
-    uniq_pkg_pattern_bins = []
     
     for elem in dirs_to_upload:
-        pkg_pattern_bin = find_matching_pkg_bin_pattern(elem.name, options)
-        if not(pkg_pattern_bin in uniq_pkg_pattern_bins):
-            uniq_pkg_pattern_bins.append(pkg_pattern_bin)
-    
-    for found_pkg_pattern_bin in uniq_pkg_pattern_bins:
-        archive_item_name = options.prefix + found_pkg_pattern_bin
-        archive_items_to_list.append(archive_item_name)
+        archive_item_name = find_matching_archive_item_bin(elem.name, options)
+        if not(archive_item_name in archive_items_to_list):
+            archive_items_to_list.append(archive_item_name)
     
     return archive_items_to_list
 
@@ -104,7 +97,7 @@ def walk_dir(options):
     root_directory = os.path.abspath(options.directory)
     if os.path.isdir(root_directory):
         print('[+] Directory to process:"%s"' % root_directory)
-        for elem in os.scandir(root_directory):
+        for elem in sorted(os.scandir(root_directory), key=lambda e: e.name):
             directory = None
             if elem.is_dir():
                 directory = elem
